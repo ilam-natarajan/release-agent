@@ -15,7 +15,11 @@ Rules:
 - Actions must come from the allowed list
 - Be conservative with production releases
 - Output ONLY valid JSON
-- Do NOT include explanations or extra text
+- Do NOT include explanations outside the JSON
+
+The JSON MUST contain:
+- "action": the chosen action
+- "reason": a short explanation for humans
 """
 
 def decide_next_action(state):
@@ -65,7 +69,10 @@ Respond with JSON only:
     try:
         parsed = json.loads(raw_text)
         action = parsed["action"]
+        reason = parsed["reason"]
     except Exception as e:
         raise ValueError(f"Invalid JSON from Gemini: {raw_text}") from e
+
+    print(f"EXPLANATION: {reason}")
 
     return action
