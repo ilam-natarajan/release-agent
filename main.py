@@ -14,7 +14,7 @@ def run_release_agent():
         env="prod"
     )
 
-    scenario = SCENARIO_LOW_RISK_SATURDAY
+    scenario = SCENARIO_HIGH_RISK_FRIDAY
 
     while state.stage not in ["DONE", "ABORTED"]:
         print(f"\nOBSERVE: {state}")

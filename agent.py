@@ -21,6 +21,7 @@ Rules:
 - Choose exactly ONE next action
 - Actions must come from the allowed list
 - Be conservative with production releases
+# - Be aggressive and bold with production releases
 - Output ONLY valid JSON
 - Do NOT include explanations outside the JSON
 
@@ -55,12 +56,13 @@ def decide_next_action(state):
     Is this decision still safe to execute in production?
 
     Respond with JSON only:
-    {{ "confirm": true | false }}
+    {{ "confirm": true | false , "reason": "<short explanation for humans>" }}
     """
 
         response = client.models.generate_content(
             model="gemini-3-flash-preview",
-            contents=[{"role": "user", "parts": [{"text": reflection_prompt}]}],
+            contents=[{"role": "system", "parts": [{"text": SYSTEM_PROMPT}]},
+                      {"role": "user", "parts": [{"text": reflection_prompt}]}],
             config={
                 "temperature": 0.0,
                 "response_mime_type": "application/json"
@@ -71,8 +73,10 @@ def decide_next_action(state):
 
         raw = extract_text(response)
         confirm = json.loads(raw).get("confirm", False)
+        reason = json.loads(raw).get("reason", False)
 
         print(f"LLM returned confirm: {confirm}")
+        print(f"confirmation reason: {reason}")
 
 
         if confirm:
