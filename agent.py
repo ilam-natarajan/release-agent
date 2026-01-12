@@ -35,19 +35,13 @@ def decide_next_action(state, memory):
 
     allowed_actions = ACTIONS_BY_STAGE.get(state.stage, ["abort_release"])
 
-    past = memory.recall(
-        {
-            "feature_risk": state.feature_risk,
-            "day_of_week": state.day_of_week,
-            "service_criticality": state.service_criticality
-        }
-    )
+    past = memory.episodes()
 
     memory_hint = ""
     if past:
         memory_hint = "\nHistorical context (advisory only):\n"
         for p in past:
-            memory_hint += f"- Decision: {p['decision']}, Outcome: {p['outcome']}\n"
+            memory_hint += f"{p}\n"
 
         
     print("MEMORY HINT:", memory_hint)

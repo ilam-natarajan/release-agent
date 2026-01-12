@@ -1,38 +1,118 @@
-[
-  {
-    "context": {
-      "feature_risk": "LOW",
-      "day_of_week": "TUE",
-      "service_criticality": "MEDIUM"
+{
+  "episodes": [
+    {
+      "context": {
+        "feature_risk": "HIGH",
+        "day_of_week": "FRI",
+        "service_criticality": "HIGH"
+      },
+      "decision": "ABORT",
+      "outcome": "ABORTED",
+      "timestamp": "2026-01-12T11:23:26.100243+00:00"
     },
-    "decision": "GO",
-    "outcome": "SUCCESS"
-  },
-  {
-    "context": {
-      "feature_risk": "LOW",
-      "day_of_week": "TUE",
-      "service_criticality": "MEDIUM"
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "TUE",
+        "service_criticality": "MEDIUM"
+      },
+      "decision": "GO",
+      "outcome": "SUCCESS",
+      "timestamp": "2026-01-12T11:24:30.624396+00:00"
     },
-    "decision": "GO",
-    "outcome": "SUCCESS"
-  },
-  {
-    "context": {
-      "feature_risk": "LOW",
-      "day_of_week": "TUE",
-      "service_criticality": "MEDIUM"
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "TUE",
+        "service_criticality": "MEDIUM"
+      },
+      "decision": "GO",
+      "outcome": "SUCCESS",
+      "timestamp": "2026-01-12T11:38:15.490955+00:00"
     },
-    "decision": "GO",
-    "outcome": "SUCCESS"
-  },
-  {
-    "context": {
-      "feature_risk": "HIGH",
-      "day_of_week": "FRI",
-      "service_criticality": "HIGH"
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "FRI",
+        "service_criticality": "LOW"
+      },
+      "decision": "ABORT",
+      "outcome": "ABORTED",
+      "timestamp": "2026-01-12T11:39:28.723668+00:00"
     },
-    "decision": "ABORT",
-    "outcome": "SUCCESS"
-  }
-]
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "MON",
+        "service_criticality": "LOW"
+      },
+      "decision": "GO",
+      "outcome": "SUCCESS",
+      "timestamp": "2026-01-12T11:48:07.427184+00:00"
+    },
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "MON",
+        "service_criticality": "LOW"
+      },
+      "decision": "GO",
+      "outcome": "SUCCESS",
+      "timestamp": "2026-01-12T12:33:26.482374+00:00"
+    },
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "MON",
+        "service_criticality": "LOW"
+      },
+      "decision": "GO",
+      "outcome": "SUCCESS",
+      "timestamp": "2026-01-12T14:15:14.225764+00:00"
+    }
+  ],
+  "heuristics": [
+    {
+      "when": {
+        "day_of_week": "FRI"
+      },
+      "recommendation": "NO_GO",
+      "confidence": 0.6,
+      "supporting_episodes": 2
+    },
+    {
+      "when": {
+        "feature_risk": "LOW",
+        "day_of_week": "TUE",
+        "service_criticality": "MEDIUM"
+      },
+      "recommendation": "GO",
+      "confidence": 0.6,
+      "supporting_episodes": 2
+    },
+    {
+      "when": {
+        "day_of_week": "FRI"
+      },
+      "recommendation": "NO_GO",
+      "confidence": 0.6,
+      "supporting_episodes": 2
+    },
+    {
+      "when": {
+        "day_of_week": "TUE"
+      },
+      "recommendation": "GO",
+      "confidence": 0.6,
+      "supporting_episodes": 2
+    },
+    {
+      "when": {
+        "service_criticality": "MEDIUM"
+      },
+      "recommendation": "GO",
+      "confidence": 0.6,
+      "supporting_episodes": 2
+    }
+  ]
+}

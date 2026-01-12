@@ -17,7 +17,7 @@ def simulate(state, action, scenario):
         state.clash = False
         state.stage = "DECISION"
 
-    elif action == "approve_release":
+    elif action == "approve_release" or action == "GO":
         state.decision = "GO"
         state.stage = "DONE"
 

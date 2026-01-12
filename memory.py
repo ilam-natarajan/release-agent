@@ -1,27 +1,58 @@
+# memory.py
 import json
 from pathlib import Path
+from datetime import datetime, timezone
 
 MEMORY_FILE = Path("memory.json")
 
+
 class EpisodicMemory:
     def __init__(self):
-        if MEMORY_FILE.exists():
-            self.entries = json.loads(MEMORY_FILE.read_text())
-        else:
-            self.entries = []
+        self.memory = self._load()
 
-    def write(self, context, decision, outcome):
+    def _load(self) -> dict:
+        if not MEMORY_FILE.exists():
+            return {
+                "episodes": [],
+                "heuristics": []
+            }
+
+        data = json.loads(MEMORY_FILE.read_text())
+
+        # migration safety: old list-based memory
+        if isinstance(data, list):
+            return {
+                "episodes": data,
+                "heuristics": []
+            }
+
+        return data
+
+    def _save(self) -> None:
+        MEMORY_FILE.write_text(json.dumps(self.memory, indent=2))
+
+    # ---------- WRITE ----------
+
+    def write(self, context: dict, decision: str, outcome: str) -> None:
         entry = {
             "context": context,
             "decision": decision,
-            "outcome": outcome
+            "outcome": outcome,
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
-        self.entries.append(entry)
-        MEMORY_FILE.write_text(json.dumps(self.entries, indent=2))
 
-    def recall(self, context):
-        return [
-            e for e in self.entries
-            if e["context"]["feature_risk"] == context["feature_risk"]
-            and e["context"]["day_of_week"] == context["day_of_week"]
-        ]
+        self.memory["episodes"].append(entry)
+        self._save()
+
+    # ---------- READ ----------
+
+    def episodes(self) -> list:
+        return self.memory["episodes"]
+
+    def heuristics(self) -> list:
+        return self.memory["heuristics"]
+
+    def add_heuristic(self, heuristic: dict) -> None:
+        print("ADDING HEURISTIC TO MEMORY:", heuristic)
+        self.memory["heuristics"].append(heuristic)
+        self._save()

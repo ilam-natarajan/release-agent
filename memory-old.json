@@ -1,0 +1,15 @@
+{
+  "episodes": [
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "TUE",
+        "service_criticality": "MEDIUM"
+      },
+      "decision": "GO",
+      "outcome": "SUCCESS",
+      "timestamp": "2026-01-12T01:45:00Z"
+    }
+  ],
+  "heuristics": []
+}
