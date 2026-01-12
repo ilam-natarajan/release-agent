@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Release Agent Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <nav class="nav">
+          <div class="logo">
+            <span class="logo-mark"></span>
+            <span>release_agent</span>
+          </div>
+          <div class="nav-links">
+            <a href="#demo">Demo</a>
+            <a href="#how">How it works</a>
+            <a href="#insights">Insights</a>
+          </div>
+          <button class="ghost" id="pulseBtn">Simulate signal</button>
+        </nav>
+
+        <div class="hero-grid">
+          <div class="hero-copy stagger">
+            <p class="eyebrow">AI release decision intelligence</p>
+            <h1>
+              Ship with confidence.<br />
+              Pause with proof.
+            </h1>
+            <p class="lede">
+              release_agent learns from prior deployments, applies real-time heuristics, and
+              red-teams every call before humans push to production.
+            </p>
+            <div class="cta-row">
+              <button class="primary" id="runDemo">Run demo</button>
+              <button class="secondary" id="resetDemo">Reset</button>
+            </div>
+            <div class="hero-stats">
+              <div>
+                <span class="stat">74%</span>
+                <span class="label">fewer risky approvals</span>
+              </div>
+              <div>
+                <span class="stat">2.1x</span>
+                <span class="label">faster triage loops</span>
+              </div>
+              <div>
+                <span class="stat">12k+</span>
+                <span class="label">memory artifacts</span>
+              </div>
+            </div>
+          </div>
+          <div class="hero-panel stagger">
+            <div class="panel-header">
+              <span>Live Decision Console</span>
+              <span class="status" id="demoStatus">Idle</span>
+            </div>
+            <div class="scenario-list" id="scenarioList"></div>
+            <div class="pipeline">
+              <div class="pipeline-step" data-step="context">
+                <span>Context evaluation</span>
+                <span class="dot"></span>
+              </div>
+              <div class="pipeline-step" data-step="heuristics">
+                <span>Heuristic matching</span>
+                <span class="dot"></span>
+              </div>
+              <div class="pipeline-step" data-step="planning">
+                <span>Decision planning</span>
+                <span class="dot"></span>
+              </div>
+              <div class="pipeline-step" data-step="redteam">
+                <span>Red team review</span>
+                <span class="dot"></span>
+              </div>
+              <div class="pipeline-step" data-step="reflection">
+                <span>Reflection loop</span>
+                <span class="dot"></span>
+              </div>
+            </div>
+            <div class="decision" id="decisionBox">
+              <div>
+                <p class="decision-label">Decision</p>
+                <h3 class="decision-value" id="decisionValue">Awaiting run</h3>
+              </div>
+              <div class="confidence">
+                <span>Confidence</span>
+                <div class="confidence-bar">
+                  <span id="confidenceFill"></span>
+                </div>
+                <span id="confidenceValue">0%</span>
+              </div>
+            </div>
+            <div class="notes" id="decisionNotes">
+              Select a scenario, then run the demo to see the pipeline light up.
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="how" id="how">
+        <div class="section-title">How it works</div>
+        <div class="how-grid">
+          <article class="card stagger">
+            <h3>Episodic memory</h3>
+            <p>Every release outcome becomes a memory shard. Patterns strengthen or decay with time.</p>
+          </article>
+          <article class="card stagger">
+            <h3>Heuristic engine</h3>
+            <p>Risk signals like criticality, timing, and missing tests are scored and matched.</p>
+          </article>
+          <article class="card stagger">
+            <h3>Planner + red team</h3>
+            <p>LLM planning proposes the call, while an adversarial reviewer challenges the plan.</p>
+          </article>
+          <article class="card stagger">
+            <h3>Reflection loop</h3>
+            <p>High-risk decisions demand explicit human confirmation before GO is allowed.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="insights" id="insights">
+        <div class="section-title">Decision insights</div>
+        <div class="insight-grid">
+          <div class="insight">
+            <h4>Top heuristics firing</h4>
+            <ul>
+              <li>"Friday afternoon + critical service"</li>
+              <li>"No rollback plan"</li>
+              <li>"Elevated customer-impact score"</li>
+            </ul>
+          </div>
+          <div class="insight">
+            <h4>Suggested mitigations</h4>
+            <ul>
+              <li>Schedule in maintenance window</li>
+              <li>Add canary deploy + metrics guardrail</li>
+              <li>Require SRE on-call signoff</li>
+            </ul>
+          </div>
+          <div class="insight">
+            <h4>Memory snapshot</h4>
+            <p>
+              6 releases delayed in the last 30 days due to insufficient rollback detail. The
+              agent weighs this signal at +0.32 risk.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer" id="demo">
+        <span>Built to demo the release_agent pipeline.</span>
+        <span>Run locally: open <code>frontend/index.html</code>.</span>
+      </footer>
+    </div>
+
+    <div class="ambient">
+      <span class="orb"></span>
+      <span class="orb"></span>
+      <span class="orb"></span>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
