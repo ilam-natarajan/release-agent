@@ -70,19 +70,31 @@ function updateDecision(decision) {
 }
 
 function formatLog(data) {
-  const lines = [];
-  data.steps.forEach((step, index) => {
-    lines.push(`Step ${index + 1}: ${step.action}`);
-    lines.push(`  Planner decision: ${step.plan.decision}`);
-    lines.push(`  Reason: ${step.plan.reason}`);
-    lines.push(`  Red team: ${step.red_team.risk_level} (${step.red_team.suggested_action})`);
-    if (step.red_team.concerns.length) {
-      lines.push("  Concerns:");
-      step.red_team.concerns.forEach((concern) => lines.push(`    - ${concern}`));
-    }
-  });
-  lines.push(`Final: ${data.decision}`);
-  return lines.join("\n");
+  return data.steps
+    .map((step, index) => {
+      const concerns = step.red_team.concerns.length
+        ? `<ul>${step.red_team.concerns.map((c) => `<li>${c}</li>`).join("")}</ul>`
+        : "<div class=\"muted\">No concerns flagged.</div>";
+      return `
+        <div class="log-block">
+          <div class="log-step">Step ${index + 1}: ${step.action}</div>
+          <div class="log-section">
+            <div class="log-label">Planner decision</div>
+            <div class="log-value">${step.plan.decision}</div>
+            <div class="log-reason">${step.plan.reason}</div>
+          </div>
+          <div class="log-section">
+            <div class="log-label">Red team</div>
+            <div class="log-value">${step.red_team.risk_level} (${step.red_team.suggested_action})</div>
+            ${concerns}
+          </div>
+        </div>
+      `;
+    })
+    .concat(
+      `<div class="log-final">Final decision: <strong>${data.decision}</strong></div>`
+    )
+    .join("");
 }
 
 async function fetchScenarios() {
@@ -139,7 +151,7 @@ async function runDemo() {
     reflectionBox.textContent = data.reflection.ran
       ? `Reflection ran. Heuristics added: ${data.reflection.added}`
       : "Reflection not triggered.";
-    logOutput.textContent = formatLog(data);
+    logOutput.innerHTML = formatLog(data);
     rawOutput.textContent = JSON.stringify(data, null, 2);
     setStatus("Complete");
   } catch (error) {

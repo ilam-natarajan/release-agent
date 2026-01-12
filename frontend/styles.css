@@ -182,6 +182,60 @@ button.ghost {
   font-size: 0.9rem;
   color: var(--muted);
   line-height: 1.6;
+  display: grid;
+  gap: 12px;
+}
+
+.log-block {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  background: #f8fafc;
+  display: grid;
+  gap: 10px;
+}
+
+.log-step {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.log-section {
+  display: grid;
+  gap: 4px;
+}
+
+.log-label {
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.log-value {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.log-reason {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.log-section ul {
+  margin: 6px 0 0 18px;
+}
+
+.log-final {
+  border-radius: 10px;
+  background: var(--accent-soft);
+  padding: 10px 12px;
+  color: var(--ink);
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .raw {
