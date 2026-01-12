@@ -1,6 +1,9 @@
+"""LLM-backed decision agent for advancing release state."""
 import json
 import os
+
 from google import genai
+
 from actions import ALLOWED_ACTIONS
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
@@ -30,7 +33,9 @@ The JSON MUST contain:
 - "reason": a short explanation for humans
 """
 
+
 def decide_next_action(state, memory):
+    """Choose the next release action using LLM guidance and memory hints."""
     print("LLM CALLED")
 
     allowed_actions = ACTIONS_BY_STAGE.get(state.stage, ["abort_release"])
@@ -43,18 +48,16 @@ def decide_next_action(state, memory):
         for p in past:
             memory_hint += f"{p}\n"
 
-        
     print("MEMORY HINT:", memory_hint)
 
-
-
     def extract_text(response):
+        """Extract text parts from a Gemini response payload."""
         parts = response.candidates[0].content.parts
         text_parts = [p.text for p in parts if hasattr(p, "text")]
         return "".join(text_parts)
 
     if state.stage == "REFLECT":
-        state.decision = "approve_release" # this is because when we move from approve_release to reflect, we lose the decision.
+        state.decision = "approve_release"  # this is because when we move from approve_release to reflect, we lose the decision.
         reflection_prompt = f"""
     You previously chose the action: {state.decision}
 
@@ -74,15 +77,12 @@ def decide_next_action(state, memory):
 
         response = client.models.generate_content(
             model="gemini-3-flash-preview",
-            contents=[{"role": "system", "parts": [{"text": SYSTEM_PROMPT}]},
-                      {"role": "user", "parts": [{"text": reflection_prompt}]}],
-            config={
-                "temperature": 0.0,
-                "response_mime_type": "application/json"
-            }
+            contents=[
+                {"role": "system", "parts": [{"text": SYSTEM_PROMPT}]},
+                {"role": "user", "parts": [{"text": reflection_prompt}]},
+            ],
+            config={"temperature": 0.0, "response_mime_type": "application/json"},
         )
-
-        
 
         raw = extract_text(response)
         confirm = json.loads(raw).get("confirm", False)
@@ -91,15 +91,11 @@ def decide_next_action(state, memory):
         print(f"LLM returned confirm: {confirm}")
         print(f"confirmation reason: {reason}")
 
-
         if confirm:
             return state.decision
         else:
             print("REFLECTION OVERRIDE: aborting for safety")
             return "abort_release"
-
-
-
 
     prompt = f"""
 Current release state:
@@ -126,15 +122,10 @@ Respond with JSON only:
         model="gemini-3-flash-preview",
         contents=[
             {"role": "system", "parts": [{"text": SYSTEM_PROMPT}]},
-            {"role": "user", "parts": [{"text": prompt}]}
+            {"role": "user", "parts": [{"text": prompt}]},
         ],
-        config={
-            "temperature": 0.0,
-            "response_mime_type": "application/json"
-        }
+        config={"temperature": 0.0, "response_mime_type": "application/json"},
     )
-
-    
 
     # print("LLM RESPONSE:", response)
     raw_text = extract_text(response)
@@ -147,18 +138,12 @@ Respond with JSON only:
         print(f"LLM returned action: {action}")
         print(f"EXPLANATION: {reason}")
 
-
         # Reflection trigger: approval in prod
-        if (
-            state.env == "prod"
-            and action == "approve_release"
-        ):
+        if state.env == "prod" and action == "approve_release":
             print("TRIGGERING REFLECTION STEP")
             return "reflect"
 
-
     except Exception as e:
         raise ValueError(f"Invalid JSON from Gemini: {raw_text}") from e
-
 
     return action

@@ -69,6 +69,66 @@
       "decision": "GO",
       "outcome": "SUCCESS",
       "timestamp": "2026-01-12T14:15:14.225764+00:00"
+    },
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "MON",
+        "service_criticality": "LOW"
+      },
+      "decision": "GO",
+      "outcome": "SUCCESS",
+      "timestamp": "2026-01-12T23:13:16.240802+00:00"
+    },
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "MON",
+        "service_criticality": "LOW"
+      },
+      "decision": "GO",
+      "outcome": "SUCCESS",
+      "timestamp": "2026-01-12T23:24:00.092486+00:00"
+    },
+    {
+      "context": {
+        "feature_risk": "HIGH",
+        "day_of_week": "FRI",
+        "service_criticality": "HIGH"
+      },
+      "decision": "ABORT",
+      "outcome": "ABORTED",
+      "timestamp": "2026-01-12T23:33:22.435615+00:00"
+    },
+    {
+      "context": {
+        "feature_risk": "HIGH",
+        "day_of_week": "FRI",
+        "service_criticality": "HIGH"
+      },
+      "decision": "ABORT",
+      "outcome": "ABORTED",
+      "timestamp": "2026-01-12T23:36:46.541408+00:00"
+    },
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "MON",
+        "service_criticality": "LOW"
+      },
+      "decision": "GO",
+      "outcome": "SUCCESS",
+      "timestamp": "2026-01-12T23:37:38.782739+00:00"
+    },
+    {
+      "context": {
+        "feature_risk": "LOW",
+        "day_of_week": "TUE",
+        "service_criticality": "MEDIUM"
+      },
+      "decision": "GO",
+      "outcome": "SUCCESS",
+      "timestamp": "2026-01-12T23:38:07.136011+00:00"
     }
   ],
   "heuristics": [
@@ -113,6 +173,26 @@
       "recommendation": "GO",
       "confidence": 0.6,
       "supporting_episodes": 2
+    },
+    {
+      "when": {
+        "feature_risk": "LOW",
+        "day_of_week": "MON",
+        "service_criticality": "LOW"
+      },
+      "recommendation": "GO",
+      "confidence": 0.9,
+      "supporting_episodes": 4
+    },
+    {
+      "when": {
+        "feature_risk": "HIGH",
+        "day_of_week": "FRI",
+        "service_criticality": "HIGH"
+      },
+      "recommendation": "NO_GO",
+      "confidence": 0.5,
+      "supporting_episodes": 1
     }
   ]
 }

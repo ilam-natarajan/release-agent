@@ -1,12 +1,13 @@
-# red_team.py
-from typing import TypedDict, List
+"""Adversarial reviewer for deployment decisions."""
 import json
+from typing import List, TypedDict
 
 
 class RedTeamResult(TypedDict):
+    """Typed dictionary schema for red-team review outputs."""
     concerns: List[str]
-    risk_level: str              # LOW | MEDIUM | HIGH
-    suggested_action: str        # NONE | DELAY | NO_GO
+    risk_level: str  # LOW | MEDIUM | HIGH
+    suggested_action: str  # NONE | DELAY | NO_GO
 
 
 RED_TEAM_PROMPT = """
@@ -43,17 +44,16 @@ Output format:
 # red_team.py
 MODEL = "gemini-3-flash-preview"
 
+
 def run_red_team(client, context: dict, decision: str, evidence: dict) -> RedTeamResult:
+    """Run the red-team reviewer and validate its structured response."""
     prompt = RED_TEAM_PROMPT.format(
         context=json.dumps(context, indent=2),
         decision=decision,
-        evidence=json.dumps(evidence, indent=2)
+        evidence=json.dumps(evidence, indent=2),
     )
 
-    response = client.models.generate_content(
-        model=MODEL,
-        contents=prompt
-    )
+    response = client.models.generate_content(model=MODEL, contents=prompt)
 
     text = response.candidates[0].content.parts[0].text
     parsed = json.loads(text)

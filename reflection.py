@@ -1,4 +1,4 @@
-# reflection.py
+"""Heuristic extraction from recent episodic memory."""
 import json
 
 REFLECTION_PROMPT = """
@@ -29,18 +29,15 @@ Output format:
 
 MODEL = "gemini-3-flash-preview"
 
+
 def run_reflection(client, episodes: list) -> list:
-    prompt = REFLECTION_PROMPT.format(
-        episodes=json.dumps(episodes, indent=2)
-    )
+    """Generate heuristic candidates from recent episodes via the LLM."""
+    prompt = REFLECTION_PROMPT.format(episodes=json.dumps(episodes, indent=2))
 
     response = client.models.generate_content(
         model=MODEL,
         contents=prompt,
-        config={
-                "temperature": 0.0,
-                "response_mime_type": "application/json"
-            }
+        config={"temperature": 0.0, "response_mime_type": "application/json"},
     )
 
     # Gemini returns structured candidates

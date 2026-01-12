@@ -1,143 +1,174 @@
-const scenarios = [
-  {
-    name: "Checkout patch",
-    risk: "low",
-    service: "payments",
-    timing: "Wed 10:30",
-    notes: "Small patch, canary ready",
-    decision: "GO",
-    confidence: 82,
-  },
-  {
-    name: "Inventory refactor",
-    risk: "medium",
-    service: "fulfillment",
-    timing: "Thu 18:45",
-    notes: "Potential cache churn, add SRE",
-    decision: "DELAY",
-    confidence: 67,
-  },
-  {
-    name: "Auth migration",
-    risk: "high",
-    service: "identity",
-    timing: "Fri 16:10",
-    notes: "Rollback unclear, high blast radius",
-    decision: "NO-GO",
-    confidence: 88,
-  },
-];
-
-const scenarioList = document.getElementById("scenarioList");
-const decisionValue = document.getElementById("decisionValue");
-const confidenceFill = document.getElementById("confidenceFill");
-const confidenceValue = document.getElementById("confidenceValue");
-const decisionNotes = document.getElementById("decisionNotes");
-const demoStatus = document.getElementById("demoStatus");
-const steps = Array.from(document.querySelectorAll(".pipeline-step"));
+const scenarioSelect = document.getElementById("scenarioSelect");
+const scenarioDetails = document.getElementById("scenarioDetails");
 const runButton = document.getElementById("runDemo");
 const resetButton = document.getElementById("resetDemo");
-const pulseButton = document.getElementById("pulseBtn");
+const logOutput = document.getElementById("logOutput");
+const rawOutput = document.getElementById("rawOutput");
+const decisionBox = document.getElementById("decisionBox");
+const decisionMeta = document.getElementById("decisionMeta");
+const reflectionBox = document.getElementById("reflectionBox");
+const pipelineSteps = Array.from(document.querySelectorAll("#pipelineSteps li"));
+const serverStatus = document.getElementById("serverStatus");
+const runStatus = document.getElementById("runStatus");
 
-let selectedScenario = scenarios[0];
+let scenarios = [];
 let running = false;
-let timeouts = [];
 
-function renderScenarios() {
-  scenarioList.innerHTML = "";
-  scenarios.forEach((scenario) => {
-    const card = document.createElement("button");
-    card.className = "scenario";
-    card.type = "button";
-    card.innerHTML = `
-      <strong>${scenario.name}</strong><br />
-      <span>${scenario.service}</span><br />
-      <span>${scenario.timing}</span>
-    `;
-    if (scenario === selectedScenario) {
-      card.classList.add("selected");
-    }
-    card.addEventListener("click", () => {
-      if (running) {
-        return;
-      }
-      selectedScenario = scenario;
-      renderScenarios();
-      decisionNotes.textContent = `${scenario.notes} (Risk: ${scenario.risk}).`;
-      decisionValue.textContent = "Awaiting run";
-      confidenceFill.style.width = "0%";
-      confidenceValue.textContent = "0%";
-      demoStatus.textContent = "Idle";
-    });
-    scenarioList.appendChild(card);
+function setStatus(text) {
+  runStatus.textContent = text;
+}
+
+function setServerStatus(text) {
+  serverStatus.textContent = text;
+}
+
+function updateScenarioDetails(scenario) {
+  if (!scenario) {
+    scenarioDetails.textContent = "No scenario loaded.";
+    return;
+  }
+  const { data } = scenario;
+  scenarioDetails.textContent = `Risk: ${data.feature_risk} | Criticality: ${data.service_criticality} | Day: ${data.day_of_week} @ ${data.hour_of_day}:00 | Clash: ${data.clash_outcomes[0]}`;
+}
+
+function resetPipeline() {
+  pipelineSteps.forEach((step) => step.classList.remove("active", "done"));
+}
+
+function highlightPipeline(index) {
+  pipelineSteps.forEach((step, i) => {
+    step.classList.toggle("active", i === index);
+    step.classList.toggle("done", i < index);
   });
 }
 
-function clearPipeline() {
-  steps.forEach((step) => step.classList.remove("active", "done"));
+function markPipelineDone() {
+  pipelineSteps.forEach((step) => step.classList.add("done"));
+  pipelineSteps.forEach((step) => step.classList.remove("active"));
 }
 
-function clearTimers() {
-  timeouts.forEach((timeoutId) => clearTimeout(timeoutId));
-  timeouts = [];
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function setDecision() {
-  const { decision, confidence, notes } = selectedScenario;
-  decisionValue.textContent = decision;
-  confidenceFill.style.width = `${confidence}%`;
-  confidenceValue.textContent = `${confidence}%`;
-  decisionNotes.textContent = `Decision notes: ${notes}.`;
+async function animatePipeline() {
+  for (let i = 0; i < pipelineSteps.length; i += 1) {
+    highlightPipeline(i);
+    await delay(320);
+  }
+  markPipelineDone();
 }
 
-function runDemo() {
+function updateDecision(decision) {
+  decisionBox.classList.remove("good", "warn");
+  decisionBox.querySelector(".decision-label").textContent = decision || "Awaiting run";
+  if (decision === "GO") {
+    decisionBox.classList.add("good");
+  } else if (decision) {
+    decisionBox.classList.add("warn");
+  }
+}
+
+function formatLog(data) {
+  const lines = [];
+  data.steps.forEach((step, index) => {
+    lines.push(`Step ${index + 1}: ${step.action}`);
+    lines.push(`  Planner decision: ${step.plan.decision}`);
+    lines.push(`  Reason: ${step.plan.reason}`);
+    lines.push(`  Red team: ${step.red_team.risk_level} (${step.red_team.suggested_action})`);
+    if (step.red_team.concerns.length) {
+      lines.push("  Concerns:");
+      step.red_team.concerns.forEach((concern) => lines.push(`    - ${concern}`));
+    }
+  });
+  lines.push(`Final: ${data.decision}`);
+  return lines.join("\n");
+}
+
+async function fetchScenarios() {
+  try {
+    const response = await fetch("/api/scenarios");
+    if (!response.ok) {
+      throw new Error("Failed to load scenarios");
+    }
+    const payload = await response.json();
+    scenarios = payload.scenarios;
+    scenarioSelect.innerHTML = "";
+    scenarios.forEach((scenario) => {
+      const option = document.createElement("option");
+      option.value = scenario.id;
+      option.textContent = scenario.label;
+      scenarioSelect.appendChild(option);
+    });
+    updateScenarioDetails(scenarios[0]);
+    setServerStatus("Server: connected");
+  } catch (error) {
+    setServerStatus("Server: unavailable (run main.py --serve)");
+    scenarioDetails.textContent = "Start the API server to load scenarios.";
+  }
+}
+
+async function runDemo() {
   if (running) {
     return;
   }
+  const scenarioId = scenarioSelect.value;
+  if (!scenarioId) {
+    return;
+  }
   running = true;
-  demoStatus.textContent = "Running";
-  clearPipeline();
-  decisionValue.textContent = "Analyzing";
-  confidenceFill.style.width = "0%";
-  confidenceValue.textContent = "0%";
-  decisionNotes.textContent = "Pipeline in progress...";
+  setStatus("Running");
+  resetPipeline();
+  updateDecision("Running...");
+  decisionMeta.textContent = "Confidence: --";
+  reflectionBox.textContent = "Running reflection checks...";
+  logOutput.textContent = "Executing pipeline...";
+  rawOutput.textContent = "{}";
 
-  steps.forEach((step, index) => {
-    const activateId = setTimeout(() => {
-      step.classList.add("active");
-    }, index * 600);
-    const doneId = setTimeout(() => {
-      step.classList.remove("active");
-      step.classList.add("done");
-      if (index === steps.length - 1) {
-        setDecision();
-        demoStatus.textContent = "Complete";
-        running = false;
-      }
-    }, index * 600 + 420);
-    timeouts.push(activateId, doneId);
-  });
+  const pipelineAnimation = animatePipeline();
+  try {
+    const response = await fetch(`/api/run?scenario=${encodeURIComponent(scenarioId)}`);
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || "Run failed");
+    }
+    const data = await response.json();
+    await pipelineAnimation;
+    updateDecision(data.decision);
+    decisionMeta.textContent = `History entries: ${data.history.length}`;
+    reflectionBox.textContent = data.reflection.ran
+      ? `Reflection ran. Heuristics added: ${data.reflection.added}`
+      : "Reflection not triggered.";
+    logOutput.textContent = formatLog(data);
+    rawOutput.textContent = JSON.stringify(data, null, 2);
+    setStatus("Complete");
+  } catch (error) {
+    logOutput.textContent = `Error: ${error.message}`;
+    rawOutput.textContent = "{}";
+    setStatus("Failed");
+  } finally {
+    running = false;
+  }
 }
 
 function resetDemo() {
   running = false;
-  clearTimers();
-  clearPipeline();
-  decisionValue.textContent = "Awaiting run";
-  confidenceFill.style.width = "0%";
-  confidenceValue.textContent = "0%";
-  demoStatus.textContent = "Idle";
-  decisionNotes.textContent = "Select a scenario, then run the demo to see the pipeline light up.";
+  resetPipeline();
+  updateDecision("Awaiting run");
+  decisionMeta.textContent = "Confidence: --";
+  reflectionBox.textContent = "No reflection run yet.";
+  logOutput.textContent = "Start the demo to see structured output.";
+  rawOutput.textContent = "{}";
+  setStatus("Idle");
 }
 
-function pulseSignal() {
-  document.body.classList.add("signal");
-  setTimeout(() => document.body.classList.remove("signal"), 600);
-}
+scenarioSelect.addEventListener("change", (event) => {
+  const scenario = scenarios.find((item) => item.id === event.target.value);
+  updateScenarioDetails(scenario);
+});
 
 runButton.addEventListener("click", runDemo);
 resetButton.addEventListener("click", resetDemo);
-pulseButton.addEventListener("click", pulseSignal);
 
-renderScenarios();
+fetchScenarios();
 resetDemo();

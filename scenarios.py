@@ -1,10 +1,11 @@
+"""Scenario fixtures used for demo runs."""
 SCENARIO_HIGH_RISK_FRIDAY = {
     "feature_risk": "HIGH",
     "service_criticality": "HIGH",
     "day_of_week": "FRI",
     "hour_of_day": 16,
     "clash_outcomes": [True, False],
-    "conflicting_services": ["PAYMENTS-SERVICE"]
+    "conflicting_services": ["PAYMENTS-SERVICE"],
 }
 
 SCENARIO_LOW_RISK_FRIDAY = {
@@ -13,7 +14,7 @@ SCENARIO_LOW_RISK_FRIDAY = {
     "day_of_week": "FRI",
     "hour_of_day": 16,
     "clash_outcomes": [False],
-    "conflicting_services": [""]
+    "conflicting_services": [""],
 }
 
 SCENARIO_LOW_RISK_SATURDAY = {
@@ -22,7 +23,7 @@ SCENARIO_LOW_RISK_SATURDAY = {
     "day_of_week": "SAT",
     "hour_of_day": 16,
     "clash_outcomes": [False],
-    "conflicting_services": [""]
+    "conflicting_services": [""],
 }
 
 SCENARIO_LOW_RISK_MONDAY = {
@@ -31,7 +32,7 @@ SCENARIO_LOW_RISK_MONDAY = {
     "day_of_week": "MON",
     "hour_of_day": 8,
     "clash_outcomes": [False],
-    "conflicting_services": [""]
+    "conflicting_services": [""],
 }
 
 SCENARIO_LOW_RISK_WEEKDAY = {
@@ -40,5 +41,5 @@ SCENARIO_LOW_RISK_WEEKDAY = {
     "day_of_week": "TUE",
     "hour_of_day": 10,
     "clash_outcomes": [False],
-    "conflicting_services": [""]
+    "conflicting_services": [""],
 }

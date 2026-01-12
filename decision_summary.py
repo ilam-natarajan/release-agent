@@ -1,9 +1,10 @@
+"""Build a concise decision summary for indexing and recall."""
 def build_decision_summary(
     context: dict,
     planner: dict,
     red_team: dict,
     final_decision: str,
-    human_outcome: str
+    human_outcome: str,
 ) -> str:
     """
     This text is what gets embedded and indexed.

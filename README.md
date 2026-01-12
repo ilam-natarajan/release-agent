@@ -34,6 +34,30 @@ python main.py
 
 The agent runs through a simulated release scenario defined in [`scenarios.py`](scenarios.py) and makes decisions based on learned heuristics and LLM reasoning.
 
+## Demo UI
+
+The demo UI runs from the same process and calls the real pipeline over HTTP.
+
+### Launch the UI
+
+```bash
+export GEMINI_API_KEY=your_key_here
+python main.py --serve
+```
+
+Then open `http://127.0.0.1:8000`.
+
+### Use the UI
+
+1. Pick a scenario from the dropdown.
+2. Click **Run** to execute the pipeline.
+3. Review the decision, reflection status, and full log output.
+
+### API endpoints
+
+- `GET /api/scenarios` returns scenario metadata for the UI.
+- `GET /api/run?scenario=<id>` runs the pipeline for the selected scenario.
+
 ## Components
 
 - [`state.py`](state.py) - Release state tracking

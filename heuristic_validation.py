@@ -1,6 +1,9 @@
+"""Validate learned heuristics before adding them to memory."""
 ALLOWED_ACTIONS = {"GO", "NO_GO", "DELAY"}
 
+
 def validate_heuristic(h: dict) -> None:
+    """Validate heuristic schema fields and confidence constraints."""
     assert isinstance(h["when"], dict)
     assert h["recommendation"] in ALLOWED_ACTIONS
     assert 0.0 <= h["confidence"] <= 1.0

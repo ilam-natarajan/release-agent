@@ -1,4 +1,6 @@
+"""Simple release simulation state machine."""
 def simulate(state, action, scenario):
+    """Advance the release state based on an action and scenario data."""
     state.history.append(f"ACTION: {action}")
 
     if action == "evaluate_risk":

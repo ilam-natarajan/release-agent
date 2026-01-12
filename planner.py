@@ -1,6 +1,4 @@
-# planner.py
-
-# planner.py
+"""LLM planner that proposes deployment decisions."""
 import json
 
 PLANNER_PROMPT = """
@@ -31,6 +29,7 @@ MODEL = "gemini-3-flash-preview"
 
 
 def run_planner(client, context: dict, heuristics: list) -> dict:
+    """Ask the LLM to return a deployment decision and short rationale."""
     prompt = PLANNER_PROMPT.format(
         context=json.dumps(context, indent=2),
         heuristics=json.dumps(heuristics, indent=2),

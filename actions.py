@@ -1,3 +1,4 @@
+"""Define the action vocabulary for the release agent."""
 ALLOWED_ACTIONS = {
     "evaluate_risk",
     "check_clash",
@@ -5,5 +6,5 @@ ALLOWED_ACTIONS = {
     "approve_release",
     "abort_release",
     "reflect",
-    "finish"
+    "finish",
 }
