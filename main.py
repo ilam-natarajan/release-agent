@@ -3,6 +3,9 @@ from agent import decide_next_action
 from simulator import simulate
 from scenarios import SCENARIO_HIGH_RISK_FRIDAY
 from scenarios import SCENARIO_LOW_RISK_WEEKDAY
+from scenarios import SCENARIO_LOW_RISK_FRIDAY
+from scenarios import SCENARIO_LOW_RISK_MONDAY
+from scenarios import SCENARIO_LOW_RISK_SATURDAY
 
 def run_release_agent():
     state = ReleaseState(
@@ -11,7 +14,7 @@ def run_release_agent():
         env="prod"
     )
 
-    scenario = SCENARIO_LOW_RISK_WEEKDAY
+    scenario = SCENARIO_LOW_RISK_SATURDAY
 
     while state.stage not in ["DONE", "ABORTED"]:
         print(f"\nOBSERVE: {state}")

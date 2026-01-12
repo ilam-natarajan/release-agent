@@ -126,8 +126,10 @@ Respond with JSON only:
         reason = parsed["reason"]
 
         print(f"LLM returned action: {action}")
+        print(f"EXPLANATION: {reason}")
 
-        # Reflection trigger: any non-abort decision in prod
+
+        # Reflection trigger: approval in prod
         if (
             state.env == "prod"
             and action == "approve_release"
@@ -139,6 +141,5 @@ Respond with JSON only:
     except Exception as e:
         raise ValueError(f"Invalid JSON from Gemini: {raw_text}") from e
 
-    print(f"EXPLANATION: {reason}")
 
     return action
