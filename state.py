@@ -8,7 +8,7 @@ class ReleaseState:
     env: str
 
     stage: str = "START"  
-    # START → RISK_EVAL → SCHEDULING → DECISION → DONE / ABORTED
+    # START → RISK_EVAL → SCHEDULING → DECISION → REFLECT → DONE / ABORTED
 
     # Risk signals
     feature_risk: str = "UNKNOWN"     # LOW / MEDIUM / HIGH

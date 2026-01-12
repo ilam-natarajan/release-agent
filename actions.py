@@ -4,5 +4,6 @@ ALLOWED_ACTIONS = {
     "reschedule",
     "approve_release",
     "abort_release",
+    "reflect",
     "finish"
 }

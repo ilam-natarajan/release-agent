@@ -25,6 +25,9 @@ def simulate(state, action, scenario):
         state.decision = "ABORT"
         state.stage = "ABORTED"
 
+    elif action == "reflect":
+        state.stage = "REFLECT"
+
     elif action == "finish":
         state.stage = "DONE"
 
