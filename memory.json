@@ -1,0 +1,38 @@
+[
+  {
+    "context": {
+      "feature_risk": "LOW",
+      "day_of_week": "TUE",
+      "service_criticality": "MEDIUM"
+    },
+    "decision": "GO",
+    "outcome": "SUCCESS"
+  },
+  {
+    "context": {
+      "feature_risk": "LOW",
+      "day_of_week": "TUE",
+      "service_criticality": "MEDIUM"
+    },
+    "decision": "GO",
+    "outcome": "SUCCESS"
+  },
+  {
+    "context": {
+      "feature_risk": "LOW",
+      "day_of_week": "TUE",
+      "service_criticality": "MEDIUM"
+    },
+    "decision": "GO",
+    "outcome": "SUCCESS"
+  },
+  {
+    "context": {
+      "feature_risk": "HIGH",
+      "day_of_week": "FRI",
+      "service_criticality": "HIGH"
+    },
+    "decision": "ABORT",
+    "outcome": "SUCCESS"
+  }
+]

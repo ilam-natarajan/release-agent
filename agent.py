@@ -30,10 +30,29 @@ The JSON MUST contain:
 - "reason": a short explanation for humans
 """
 
-def decide_next_action(state):
+def decide_next_action(state, memory):
     print("LLM CALLED")
 
     allowed_actions = ACTIONS_BY_STAGE.get(state.stage, ["abort_release"])
+
+    past = memory.recall(
+        {
+            "feature_risk": state.feature_risk,
+            "day_of_week": state.day_of_week,
+            "service_criticality": state.service_criticality
+        }
+    )
+
+    memory_hint = ""
+    if past:
+        memory_hint = "\nHistorical context (advisory only):\n"
+        for p in past:
+            memory_hint += f"- Decision: {p['decision']}, Outcome: {p['outcome']}\n"
+
+        
+    print("MEMORY HINT:", memory_hint)
+
+
 
     def extract_text(response):
         parts = response.candidates[0].content.parts
@@ -102,6 +121,8 @@ Current release state:
 
 Allowed actions:
 {allowed_actions}
+
+{memory_hint}
 
 Respond with JSON only:
 {{ "action": "<one of the allowed actions>" }}
