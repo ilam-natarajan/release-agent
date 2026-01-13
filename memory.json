@@ -149,6 +149,26 @@
       "decision": "GO",
       "outcome": "SUCCESS",
       "timestamp": "2026-01-12T23:54:27.511353+00:00"
+    },
+    {
+      "context": {
+        "feature_risk": "HIGH",
+        "day_of_week": "FRI",
+        "service_criticality": "HIGH"
+      },
+      "decision": "ABORT",
+      "outcome": "ABORTED",
+      "timestamp": "2026-01-12T23:57:43.830998+00:00"
+    },
+    {
+      "context": {
+        "feature_risk": "HIGH",
+        "day_of_week": "FRI",
+        "service_criticality": "HIGH"
+      },
+      "decision": "ABORT",
+      "outcome": "ABORTED",
+      "timestamp": "2026-01-13T00:00:20.491995+00:00"
     }
   ],
   "heuristics": [

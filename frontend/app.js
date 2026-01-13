@@ -42,21 +42,29 @@ function highlightPipeline(index) {
   });
 }
 
-function markPipelineDone() {
-  pipelineSteps.forEach((step) => step.classList.add("done"));
-  pipelineSteps.forEach((step) => step.classList.remove("active"));
-}
-
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function animatePipeline() {
+function startPipelineAnimation() {
+  let index = 0;
+  pipelineSteps.forEach((step) => step.classList.remove("done"));
+  highlightPipeline(index);
+  const timer = setInterval(() => {
+    index = (index + 1) % pipelineSteps.length;
+    highlightPipeline(index);
+  }, 450);
+  return () => clearInterval(timer);
+}
+
+async function finishPipelineAnimation(stopAnimation) {
+  stopAnimation();
   for (let i = 0; i < pipelineSteps.length; i += 1) {
     highlightPipeline(i);
-    await delay(320);
+    await delay(160);
   }
-  markPipelineDone();
+  pipelineSteps.forEach((step) => step.classList.add("done"));
+  pipelineSteps.forEach((step) => step.classList.remove("active"));
 }
 
 function updateDecision(decision) {
@@ -137,7 +145,7 @@ async function runDemo() {
   logOutput.textContent = "Executing pipeline...";
   rawOutput.textContent = "{}";
 
-  const pipelineAnimation = animatePipeline();
+  const stopPipeline = startPipelineAnimation();
   try {
     const response = await fetch(`/api/run?scenario=${encodeURIComponent(scenarioId)}`);
     if (!response.ok) {
@@ -145,7 +153,7 @@ async function runDemo() {
       throw new Error(message || "Run failed");
     }
     const data = await response.json();
-    await pipelineAnimation;
+    await finishPipelineAnimation(stopPipeline);
     updateDecision(data.decision);
     decisionMeta.textContent = `History entries: ${data.history.length}`;
     reflectionBox.textContent = data.reflection.ran
@@ -155,6 +163,8 @@ async function runDemo() {
     rawOutput.textContent = JSON.stringify(data, null, 2);
     setStatus("Complete");
   } catch (error) {
+    stopPipeline();
+    resetPipeline();
     logOutput.textContent = `Error: ${error.message}`;
     rawOutput.textContent = "{}";
     setStatus("Failed");
